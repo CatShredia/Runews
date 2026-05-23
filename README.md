@@ -35,10 +35,21 @@ flowchart LR
 - [README_for_API](CatshrediasNewsAPI/README_for_API.md)
 - [README_for_Blazor](CatshrediasNews.Client/README_for_Blazor.md)
 - [Настройка сервера на Timeweb (VPS/Cloud, DNS, HTTPS, Docker)](docs/server-setup.md)
+- [Runews + catshredia.ru на одном VPS](../catshredias-blog/docs/deploy-vps.md)
+
+## Деплой на VPS (runews.catshredia.ru)
+
+На production VPS Runews слушает **только localhost:8080**; хостовый Nginx проксирует `runews.catshredia.ru` и терминирует HTTPS.
+
+```env
+PUBLIC_URL=https://runews.catshredia.ru
+```
+
+Полная инструкция (DNS, Nginx, SSL, соседство с портфолио): [catshredias-blog/docs/deploy-vps.md](../catshredias-blog/docs/deploy-vps.md).
 
 ## Запуск Через Tuna
 
-Tuna используется как внешний HTTP-туннель к Docker-приложению. Приложение внутри Docker продолжает работать на локальном `localhost:80`, а Tuna выдает публичный HTTPS URL.
+Tuna используется как внешний HTTP-туннель к Docker-приложению. Контейнер `web` слушает **localhost:8080** (см. `docker-compose.yml`), Tuna выдает публичный HTTPS URL.
 
 1. Подготовь `.env` в корне проекта:
 
@@ -71,7 +82,7 @@ docker compose up -d --build
 3. В Tuna создай HTTP-туннель на локальный адрес:
 
 ```text
-tuna http 80
+tuna http 8080
 ```
 
 4. Если Tuna выдал новый URL, обнови `PUBLIC_URL` в `.env` и перезапусти API/web:

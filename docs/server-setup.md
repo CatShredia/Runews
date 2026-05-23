@@ -117,11 +117,13 @@ dig +short your-domain.com A
 
 ## 7. Запуск Runews через Docker на сервере Timeweb
 
+> **Два сервиса на одном VPS** (catshredia.ru + runews.catshredia.ru): полная инструкция — [catshredias-blog/docs/deploy-vps.md](../../catshredias-blog/docs/deploy-vps.md).
+
 1. Установите **Docker Engine** и плагин **Compose** по официальной инструкции Docker для вашей версии Ubuntu.  
 2. Склонируйте репозиторий на сервер или загрузите файлы проекта.  
-3. В корне создайте `.env` (переменные как в корневом [README.md](../README.md), раздел про Tuna). Для продакшена:
+3. В корне создайте `.env` (переменные как в корневом [README.md](../README.md)). Для продакшена:
 
-   - **`PUBLIC_URL`** = точный URL в браузере, например `https://your-domain.com`, **без** завершающего `/`.  
+   - **`PUBLIC_URL`** = `https://runews.catshredia.ru` (или ваш поддомен), **без** завершающего `/`.  
    - Надёжные **`POSTGRES_PASSWORD`** и **`JWT_KEY`**.  
    - Реальный **SMTP** для почты (Mailpit в compose — для разработки).
 
@@ -131,7 +133,7 @@ dig +short your-domain.com A
 docker compose up -d --build
 ```
 
-Контейнер **web** пробрасывает **80** на хост (`80:80`). Снаружи будет `http://домен` до настройки HTTPS-прокси; после настройки Nginx/Caddy — **`https://домен`**, а в `.env` должен быть тот же протокол и хост в **`PUBLIC_URL`**.
+Контейнер **web** слушает **`127.0.0.1:8080`** на хосте. Хостовый **Nginx** на `:443` проксирует `runews.catshredia.ru` → `http://127.0.0.1:8080`. В `.env` **`PUBLIC_URL`** должен совпадать с HTTPS-URL в браузере.
 
 **Рекомендации:**
 
